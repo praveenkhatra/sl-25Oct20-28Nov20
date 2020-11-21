@@ -1,0 +1,136 @@
+
+Why Ansible is popular?
+
+  - Easy to learn
+  - Written in Python
+  - no need to learn a new language (Playbooks are written in YAML)
+
+Pre-requisites:
+  - ssh connectivity (Passwordless)
+  - Python (on Both Master and nodes)
+
+================================
+PasswordLess Authentication
+================================
+## Create a System Account
+adduser ansible
+sudo usermod -aG sudo ansible
+visudo => /etc/sudoers
+%sudo (ALL)=(ALL) NOPASSWD:ALL
+
+## Create passwordless Authentication
+su - ansible
+ssh-keygen -t rsa
+ssh ansible@178.128.12.237 mkdir -p .ssh
+cat .ssh/id_rsa.pub | ssh ansible@178.128.12.237 'cat  >> .ssh/authorized_keys'
+
+##Alternatively you can use below command as well to copy ssh key:
+
+ssh-copy-id -i .ssh/id_rsa.pub ansible@<<ipaddress>>
+
+
+*****************
+Restart service
+*****************
+sudo service sshd restart
+sudo systemctl restart sshd
+
+=======================
+Installation
+=======================
+##Installation
+sudo apt-get install software-properties-common
+sudo apt-add-repository ppa:ansible/ansible
+sudo apt-get update
+sudo apt-get install -y ansible
+
+##Validation
+ansible --version
+
+=======================
+ansible.cfg => /etc/ansible/ansible.cfg
+=======================
+## Inventory File
+##Default location: /etc/ansible/hosts
+##use -i if you want to provide any other file.
+
+[nodes]
+slmaster ansible_host=xx.xx.xx.xx
+slnode ansible_host=xx.xx.xx.xx
+
+[win-nodes]
+slmaster ansible_host=xx.xx.xx.xx
+slnode ansible_host=xx.xx.xx.xx
+
+[local]
+slmaster ansible_host=xx.xx.xx.xx
+
+[Ubuntu:members]
+nodes
+win-nodes
+local
+
+
+Ex: A collection of hosts belonging to the 'webservers' group
+
+## [webservers]
+## alpha.example.org
+## beta.example.org
+## 192.168.1.100
+## 192.168.1.110
+
+Reference: https://docs.ansible.com/ansible/2.3/intro_inventory.html
+
+=======================
+Ad-Hoc Commands
+=======================
+
+Ansible AdHoc Commands:
+
+# Check node health
+ansible all -m ping
+
+# List all Ansible nodes
+ansible --list-hosts all
+
+# Run shell commands on nodes
+ansible nodes -m shell -a 'fdisk -l'
+
+# Run Shell commands on nodes with elevated privileges
+ansible nodes -m shell -a 'fdisk -l' --become
+
+# Upload a file to nodes
+ansible nodes -m copy -a 'src=test.conf dest=/tmptest.conf owner=root mode=0644' --become -K
+
+# Install a Package:
+ansible nodes -m apt -a 'name=nginx state=latest' --become
+
+# Run the following, if needed:
+ansible nodes -m shell -a 'apt update' --become
+
+# Uninstall a Package:
+ansible nodes -m apt -a 'name=nginx state=absent purge=yes' --become
+
+# Start a Service
+ansible nodes -m service -a 'name=nginx state=started enabled=yes' --become
+
+# Stop a Service
+ansible nodes -m service -a 'name=nginx state=stopped' --become
+
+## Suppress Deprecation Warning
+vi /etc/ansible/ansible.cfg
+Go to Line ~180
+Change
+deprecation_warnings = True
+to
+deprecation_warnings = False
+
+
+
+
+
+
+
+
+
+

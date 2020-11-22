@@ -9,6 +9,20 @@ Pre-requisites:
   - ssh connectivity (Passwordless)
   - Python (on Both Master and nodes)
 
+
+## Ansible command line
+ansible --> Ansible AdHoc Commands
+ansible-playbook --> Ansible Playbooks
+ansible-galaxy --> Ansible roles
+
+## Ansible terminology
+    AdHoc Commands
+    Tasks
+    Play
+    Playbooks
+    Roles
+    
+
 ================================
 PasswordLess Authentication
 ================================
@@ -28,6 +42,11 @@ cat .ssh/id_rsa.pub | ssh ansible@178.128.12.237 'cat  >> .ssh/authorized_keys'
 
 ssh-copy-id -i .ssh/id_rsa.pub ansible@<<ipaddress>>
 
+Note: You might have to edit /etc/ssh/sshd_config file on all nodes for ssh to be enabled.
+
+Make sure the following line exists and it is uncommented
+
+PasswordAuthentication yes
 
 *****************
 Restart service
@@ -54,21 +73,20 @@ ansible.cfg => /etc/ansible/ansible.cfg
 ##Default location: /etc/ansible/hosts
 ##use -i if you want to provide any other file.
 
-[nodes]
+[ubuntu-nodes]
 slmaster ansible_host=xx.xx.xx.xx
 slnode ansible_host=xx.xx.xx.xx
 
-[win-nodes]
+[rhel-nodes]
 slmaster ansible_host=xx.xx.xx.xx
 slnode ansible_host=xx.xx.xx.xx
 
 [local]
 slmaster ansible_host=xx.xx.xx.xx
 
-[Ubuntu:members]
-nodes
-win-nodes
-local
+[Alllinuxnodes:members]
+ubuntu-nodes
+rhel-nodes
 
 
 Ex: A collection of hosts belonging to the 'webservers' group
@@ -126,11 +144,68 @@ to
 deprecation_warnings = False
 
 
+=======================
+Playbooks
+=======================
+
+# ping.yml
+---
+- hosts: all
+  remote_user: ansible
+  become: yes
+  tasks:
+    - name: Ping all servers in my infrastructure
+      action: ping
+
+
+## Basic playbook
+---
+- hosts: nodes
+  become: yes
+  tasks:
+    - name: install screen
+      yum:
+        name: screen
+        state: latest
+
+
+## Variables in Ansible playbook
+---
+- hosts: '{{ myhosts }}'
+  become: yes
+  tasks:
+    - name: install specified package on above mentioned servers
+      yum:
+        name: '{{ pkg }}'
+        state: latest
+
+=======================
+Roles
+=======================
+
+Default role locations:
+- /home/ansible/.ansible/roles
+- /etc/ansible/roles
+- /usr/share/ansible/roles
+
+Install the role:
+  - ansible-galaxy install username.role_name
+  - ansible-galaxy install nginxinc.nginx
+
+
+## nginx-role
+---
+- name: nginx
+  hosts: nodes
+  become: yes
+  tasks:
+    - name: Install NGINX on nodes
+      include_role:
+        name: nginxinc.nginx
 
 
 
-
-
-
-
+References:
+https://docs.ansible.com/ansible/latest/user_guide/playbooks_intro.html#about-playbooks
+https://github.com/ansible/awx
 

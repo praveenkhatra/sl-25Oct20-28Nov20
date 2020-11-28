@@ -11,11 +11,12 @@
         - Docker Client
         - Docker Registry (Dockerhub)
     Docker commands
-    
     Creating Docker images (Dockerfile)
     Docker Networking
     Docker Volumes
     Docker Compose
+
+    Docker Swarm
 
 
 ## Keywords
@@ -123,6 +124,8 @@ Dockerfile --> Docker image (docker build) ---> Docker container (docker run)
 
 ## Dockerfile
 
+INSTRUCTIONS arguments
+
 FROM ubuntu:latest
 
 LABEL maintainer="sk12k@sl.com"
@@ -162,6 +165,8 @@ docker build -t myimage:tag .
 
 ## Class Exercise
 
+## Exercise 1:
+
 1. Create DockerHub account, if you don't have already. (hub.docker.com)
 
 2. Pull any image (ubuntu / nginx / alpine / busybox)
@@ -176,6 +181,61 @@ docker container commit <container-id> <image-name:tag>
 
 6. Push the image to your docker hub account
 Hint: docker image push
+
+
+## Exercise 2
+
+https://docs.docker.com/get-started/
+
+
+docker run --publish 8000:8080 --detach --name sk-bb bulletinboard:1.0
+
+
+docker tag bulletinboard:1.0 sk12k/bulletinboard:1.0
+
+
+## Docker Networks
+
+root@docker:~# docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+d7b5fd42c14e        bridge              bridge              local
+ef5b3c84055a        host                host                local
+6fa07a0914f1        mynetwork           bridge              local
+20dad66b7f5f        none                null                local
+
+
+**Port forwarding**
+
+-P 
+docker run -itd -P nginx --> forward 32768 (host) to 80 (Guest)
+
+Range: 32768 - 65000
+
+
+-p 8000:8080
+
+-p <portonhost>:<portoncontainer>
+
+docker run --publish 8000:8080 --detach --name sk-bb bulletinboard:1.0
+
+## Docker Volumes
+
+docker run -itd -v <pathonhost>/<pathonguest> <image-name>
+
+
+## Class Exercise 3
+7.12 - dockerregistrywithcentos.docx
+
+## Class Exercise 4
+7.15 - Docker Networking with 2 SSHs.docx
+
+
+
+
+
+
+
+
 
 
 
@@ -194,3 +254,7 @@ Hint: docker image push
 ## References:
 https://docs.docker.com/engine/images/architecture.svg
 https://docs.docker.com/engine/reference/builder/
+https://frightanic.com/computers/docker-default-container-names/
+https://docs.docker.com/get-started/
+https://docs.docker.com/get-started/resources/
+

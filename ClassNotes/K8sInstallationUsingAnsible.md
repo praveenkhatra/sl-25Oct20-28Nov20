@@ -1,18 +1,21 @@
-FROM centos:7
-RUN yum -y update && yum -y install httpd
-EXPOSE 80
-COPY run-httpd.sh /run-httpd.sh
-RUN chmod -v +x /run-httpd.sh
-CMD ["/run-httpd.sh"]
+
+## Install the roles
+
+ansible-galaxy install geerlingguy.kubernetes
+ansible-galaxy install geerlingguy.docker
+
+## Configure hosts in /etc/ansible/hosts
+
+[master]
+<master-node-ip>
 
 
-FROM node:10
-WORKDIR /usr/src/app
-COPY package*.json ./
-RUN npm install
+[worker]
+<worker-node-ip>
+<worker-node-ip>
+<worker-node-ip>
 
-
-
+## k8s-master.yml
 
 ## Playbook for Ansible Master
 - hosts: master
@@ -26,6 +29,9 @@ RUN npm install
     - geerlingguy.docker
     - geerlingguy.kubernetes
 
+ansible-playbook k8s-master.yml
+
+## k8s-nodes.yml
 
 ## Playbook for Ansible Worker Nodes
 - hosts: worker
@@ -39,11 +45,4 @@ RUN npm install
     - geerlingguy.docker
     - geerlingguy.kubernetes
 
-
-
-
-
-
-
-fatal: [167.71.132.83]: FAILED! => {"changed": true, "cmd": "kubeadm join 134.209.27.175:6443 --token lho55q.xza5bzc0t0jbtprv", "delta": "0:00:00.079728", "end": "2020-11-24 19:44:44.726172", "msg": "non-zero return code", "rc": 3, "start": "2020-11-24 19:44:44.646444", "stderr": "discovery.bootstrapToken: Invalid value: \"\": using token-based discovery without caCertHashes can be unsafe. Set unsafeSkipCAVerification as true in your kubeadm config file or pass --discovery-token-unsafe-skip-ca-verification flag to continue\nTo see the stack trace of this error execute with --v=5 or higher", "stderr_lines": ["discovery.bootstrapToken: Invalid value: \"\": using token-based discovery without caCertHashes can be unsafe. Set unsafeSkipCAVerification as true in your kubeadm config file or pass --discovery-token-unsafe-skip-ca-verification flag to continue", "To see the stack trace of this error execute with --v=5 or higher"], "stdout": "", "stdout_lines": []}
-fatal: [209.97.181.159]: FAILED! => {"changed": true, "cmd": "kubeadm join 134.209.27.175:6443 --token lho55q.xza5bzc0t0jbtprv", "delta": "0:00:00.090253", "end": "2020-11-24 19:44:43.539357", "msg": "non-zero return code", "rc": 3, "start": "2020-11-24 19:44:43.449104", "stderr": "discovery.bootstrapToken: Invalid value: \"\": using token-based discovery without caCertHashes can be unsafe. Set unsafeSkipCAVerification as true in your kubeadm config file or pass --discovery-token-unsafe-skip-ca-verification flag to continue\nTo see the stack trace of this error execute with --v=5 or higher", "stderr_lines": ["discovery.bootstrapToken: Invalid value: \"\": using token-based discovery without caCertHashes can be unsafe. Set unsafeSkipCAVerification as true in your kubeadm config file or pass --discovery-token-unsafe-skip-ca-verification flag to continue", "To see the stack trace of this error execute with --v=5 or higher"], "stdout": "", "stdout_lines": []}
+ansible-playbook k8s-nodes.yml

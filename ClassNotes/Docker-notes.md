@@ -17,6 +17,12 @@
     Docker Compose
 
     Docker Swarm
+    Kubernetes Intro
+    Monitoring
+        - Nagios
+        - ELK Stack
+
+    DevOps on AWS
 
 
 ## Keywords
@@ -185,7 +191,9 @@ Hint: docker image push
 
 ## Exercise 2
 
+**Docker**
 https://docs.docker.com/get-started/
+https://docs.docker.com/get-started/nodejs/build-images/
 
 
 docker run --publish 8000:8080 --detach --name sk-bb bulletinboard:1.0
@@ -193,6 +201,19 @@ docker run --publish 8000:8080 --detach --name sk-bb bulletinboard:1.0
 
 docker tag bulletinboard:1.0 sk12k/bulletinboard:1.0
 
+## Docker Compose
+
+**Installation**
+
+sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+sudo chmod +x /usr/local/bin/docker-compose
+
+Reference: https://docs.docker.com/compose/install/
+
+**Docker Compose**
+https://docs.docker.com/compose/gettingstarted/
+https://docs.docker.com/compose/django/
 
 ## Docker Networks
 
@@ -202,6 +223,7 @@ d7b5fd42c14e        bridge              bridge              local
 ef5b3c84055a        host                host                local
 6fa07a0914f1        mynetwork           bridge              local
 20dad66b7f5f        none                null                local
+
 
 
 **Port forwarding**
@@ -230,6 +252,19 @@ docker run -itd -v <pathonhost>/<pathonguest> <image-name>
 7.15 - Docker Networking with 2 SSHs.docx
 
 
+## Docker Swarm
+
+## Initialize Docker Swarm
+
+docker swarm init --advertise-addr 165.232.107.200
+
+Swarm initialized: current node (k9wy77r7w0w5ihij20osp15iq) is now a manager.
+
+To add a worker to this swarm, run the following command:
+
+    docker swarm join --token SWMTKN-1-2tfvw3n9uxadwbbr34ue1fde95as2tlxazkfuvfwftfom6grxw-axjn250z0843a599sx9x6fkkp 165.232.107.200:2377
+
+To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
 
 
 
@@ -250,11 +285,12 @@ docker run -itd -v <pathonhost>/<pathonguest> <image-name>
 
 
 
-
 ## References:
 https://docs.docker.com/engine/images/architecture.svg
 https://docs.docker.com/engine/reference/builder/
 https://frightanic.com/computers/docker-default-container-names/
 https://docs.docker.com/get-started/
 https://docs.docker.com/get-started/resources/
+https://docs.docker.com/network/
+
 

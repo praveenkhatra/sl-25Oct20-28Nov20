@@ -15,7 +15,6 @@
     Docker Networking
     Docker Volumes
     Docker Compose
-
     Docker Swarm
     Kubernetes Intro
     Monitoring
@@ -292,5 +291,6 @@ https://frightanic.com/computers/docker-default-container-names/
 https://docs.docker.com/get-started/
 https://docs.docker.com/get-started/resources/
 https://docs.docker.com/network/
+https://github.com/kelseyhightower/kubernetes-the-hard-way
 
 
